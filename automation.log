@@ -1,0 +1,40 @@
+2025-08-18 21:29:55,340 - INFO - Loaded 100 records from clienti_assicurazioni.xlsx
+2025-08-18 21:29:55,344 - INFO - [OK] Found 3 records between 2025-07-12 and 2025-07-15 with missing quotation to process.
+2025-08-18 21:29:55,344 - INFO - First 5 records to process:
+2025-08-18 21:29:55,345 - INFO -              Nome   Cognome Data di nascita                CF     Auto  ... Citta di residenza      Cap       Indirizzo Civico  Preventivo
+0   Stelian Ionel    Crutan      1968-02-27  CRTSLN68B27Z129F  GB587ZT  ...                NaN      NaN             NaN    NaN        None
+1          Davide  Ponzetti      1998-06-23  MRNSMN98H23F829Z  GG227PW  ...             Torino  10151.0  Via Refrancore   30.0        None
+54           Nina    Cusano             NaT  HPCRNN84X14M802Z  47E KU4  ...                NaN      NaN             NaN    NaN        None
+
+[3 rows x 13 columns]
+2025-08-18 21:29:55,364 - INFO - 
+Initializing Undetected ChromeDriver...
+2025-08-18 21:29:55,820 - INFO - patching driver executable C:\Users\Adrian\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-08-18 21:30:02,537 - INFO - [OK] Undetected ChromeDriver initialized successfully.
+2025-08-18 21:30:02,537 - INFO - Attempting to log in to Prima.it...
+2025-08-18 21:30:07,911 - INFO - [OK] Successfully logged in.
+2025-08-18 21:30:07,911 - INFO - 
+--- Processing plate: GB587ZT (Original index: 0) ---
+2025-08-18 21:30:07,912 - INFO - [GB587ZT] Starting quotation process.
+2025-08-18 21:30:16,015 - INFO - [GB587ZT] Effective date field not present (all info available).
+2025-08-18 21:30:18,524 - INFO - [GB587ZT] CAP not provided. Using default '10121'.
+2025-08-18 21:30:24,891 - INFO - [GB587ZT] Waiting for quotation results...
+2025-08-18 21:30:31,925 - INFO - [GB587ZT] Found quotation price: '970,96'
+2025-08-18 21:30:31,926 - INFO - [OK] [GB587ZT] Quotation price successfully obtained: '970,96'.
+2025-08-18 21:30:35,245 - INFO - 
+--- Processing plate: GG227PW (Original index: 1) ---
+2025-08-18 21:30:37,808 - INFO - [GG227PW] Starting quotation process.
+2025-08-18 21:30:44,668 - INFO - [GG227PW] Effective date field not present (all info available).
+2025-08-18 21:30:45,265 - INFO - [GG227PW] License year not provided. Selecting first available.
+2025-08-18 21:30:54,512 - INFO - [GG227PW] Waiting for quotation results...
+2025-08-18 21:31:02,079 - INFO - [GG227PW] Found quotation price: '405,62'
+2025-08-18 21:31:02,079 - INFO - [OK] [GG227PW] Quotation price successfully obtained: '405,62'.
+2025-08-18 21:31:06,792 - INFO - 
+--- Processing plate: 47E KU4 (Original index: 54) ---
+2025-08-18 21:31:09,412 - INFO - [47E KU4] Starting quotation process.
+2025-08-18 21:31:11,729 - ERROR - [47E KU4] [WARNING] Error during quotation retrieval: NaTType does not support strftime
+2025-08-18 21:31:11,730 - WARNING - [47E KU4] Quotation price set to 'Error' due to scraping issue.
+2025-08-18 21:31:15,470 - INFO - 
+[OK] Automation finished. All data processed and updated Excel saved to: customers_updated.xlsx
+2025-08-18 21:31:15,470 - INFO - Total quotations successfully retrieved: 2
+2025-08-18 21:31:15,470 - INFO - [OK] Browser closed.
