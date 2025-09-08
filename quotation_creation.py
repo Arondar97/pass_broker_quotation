@@ -12,7 +12,7 @@ import logging # Import the logging module
 import random
 
 # Create a FileHandler to write logs to a file
-log_file_path = 'automation.log'
+log_file_path = 'quotation_creation_log.log'
 file_handler = logging.FileHandler(log_file_path, mode='w') # 'a' for append mode, w for write
 file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
@@ -26,10 +26,8 @@ logging.basicConfig(level=logging.INFO, # Set overall logging level
 logger = logging.getLogger(__name__)
 
 # --- Configuration Constants ---
-EXCEL_INPUT_FILE = "clienti_assicurazioni.xlsx"
-EXCEL_OUTPUT_FILE = "customers_updated.xlsx"
-START_DATE_STR = "2025-07-12"
-END_DATE_STR = "2025-07-15"
+EXCEL_INPUT_FILE = "data_input.xlsx"
+EXCEL_OUTPUT_FILE = "quotations.xlsx"
 PRIMA_LOGIN_URL = "https://intermediari.prima.it/login"
 PRIMA_USER = "prima@pass-broker.it"
 PRIMA_PASSWORD = "Prima2025!"
@@ -50,7 +48,7 @@ LOC_BIRTHDAY_INPUT = (By.XPATH, "(//input[@id='owner_birth_date'])[2]") # Be car
 LOC_PROCEED_BUTTON = (By.XPATH, "(//button[@type='button'])[1]") # This is very generic, consider a better one if possible
 
 # Quotation Form - Page 2 (Additional Owner Data)
-LOC_EFFECTIVE_DATE_INPUT = (By.XPATH, "(//input[@id='effective_date_date'])[2]") # Check this path again
+LOC_COOKIES_BUTTON = (By.CSS_SELECTOR, "button.cookie-policy-accept")
 LOC_LICENSE_YEAR_DROPDOWN = (By.CSS_SELECTOR, "div[id='owner_license_year'] span[class='form-select__status']")
 LOC_LICENSE_YEAR_OPTION = lambda year: (By.XPATH, f"//div[@id='owner_license_year']//li[normalize-space()='{year}']")
 LOC_DEFAULT_LICENSE_YEAR_OPTION = (By.CSS_SELECTOR, "div[id='owner_license_year'] li:nth-child(1)")
@@ -75,8 +73,33 @@ LOC_CELL_NUMBER_INPUT = (By.CSS_SELECTOR, "#phone_number")
 LOC_PRIVACY_CHECKBOX = (By.CSS_SELECTOR, "label[for='privacy_all']")
 LOC_COMPUTE_QUOTATION_BUTTON = (By.CSS_SELECTOR, ".btn.btn--primary[data-test-id='button-calculate-quote']")
 
-# Quotation Result Page
+# Prima Results
 LOC_QUOTATION_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box__price guarantee-box__price--highlighted'] span[class='price__value']")
+LOC_INFORTUNI_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-infortuni_conducente has-bundle-discount-badge'] span[class='price__value']")
+LOC_FURTO_DROPDOWN = (By.XPATH, "//div[@class='guarantee-box guarantee-furto_incendio']//div[@class='guarantee-box__optionsWrapper']//div[1]")
+LOC_FURTO_SELECT_OPTION = (By.XPATH, "//div[@class='dropdown__option is-open']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_FURTO_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-furto_incendio'] span[class='price__value']")
+LOC_ASSISTENZA_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-assistenza_stradale has-bundle-discount-badge']//div[@class='dropdown__option']")
+LOC_ASSISTENZA_SELECT_OPTION = (By.XPATH,"//div[@class='dropdown__option is-open']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_ASSISTENZA_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-assistenza_stradale has-bundle-discount-badge'] span[class='price__value']")
+LOC_TUTELA_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-tutela_legale']//div[@class='dropdown__option']")
+LOC_TUTELA_SELECT_OPTION = (By.XPATH,"//li[contains(text(),'Super, fino a € 20.000')]")
+LOC_TUTELA_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-tutela_legale'] span[class='price__value']")
+LOC_CRISTALLI_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-cristalli']//div[@class='dropdown__option']")
+LOC_CRISTALLI_SELECT_OPTION = (By.XPATH,"//div[@class='dropdown__option is-open']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_CRISTALLI_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-cristalli'] span[class='price__value']")
+LOC_EVENTI_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-eventi_naturali with-ribbon-badge with-ribbon-badge__border']//div[@class='dropdown__option']")
+LOC_EVENTI_SELECT_OPTION = (By.XPATH,"//div[@class='guarantee-box guarantee-eventi_naturali with-ribbon-badge with-ribbon-badge__border']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_EVENTI_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-eventi_naturali with-ribbon-badge with-ribbon-badge__border'] span[class='price__value']")
+LOC_ATTI_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-eventi_sociopolitici with-ribbon-badge with-ribbon-badge__border']//div[@class='dropdown__option']")
+LOC_ATTI_SELECT_OPTION = (By.XPATH,"//div[@class='guarantee-box guarantee-eventi_sociopolitici with-ribbon-badge with-ribbon-badge__border']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_ATTI_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-eventi_sociopolitici with-ribbon-badge with-ribbon-badge__border'] span[class='price__value']")
+LOC_KASKOCOL_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-collisione']//div[@class='dropdown__option']")
+LOC_KASKOCOL_SELECT_OPTION = (By.XPATH,"//div[@class='guarantee-box guarantee-collisione']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_KASKOCOL_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-collisione'] span[class='price__value']") 
+LOC_KASKOCOMPL_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border']//div[@class='dropdown__option']")
+LOC_KASKOCOMPL_SELECT_OPTION = (By.XPATH,"//div[@class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
+LOC_KASKOCOMPL_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border'] span[class='price__value']")
 
 
 # --- Helper Functions for Selenium Interactions ---
@@ -149,12 +172,28 @@ def handle_prima_quotation_form(driver, row):
     Navigates the Prima.it quotation form and attempts to get the price.
     Returns the price string or "Not found" or "Error".
     """
-    plate = row['Auto']
+    # Initialize values 
+    quotation_price = None
+    infortuni_value = None
+    furto_value = None
+    assistenza_value = None
+    tutela_value = None
+    cristalli_value = None
+    eventi_value = None
+    atti_value = None
+    kasko_col_value = None
+    kasko_compl_value = None
+
+    plate = row['Targa']
     logger.info(f"[{plate}] Starting quotation process.")
 
     try:
         # Step 1: Navigate to new quotation form (assuming already logged in)
-        if not wait_and_click(driver, LOC_QUOTATION_BUTTON): raise Exception("Quotation button not found.")
+        if not wait_and_click(driver, LOC_QUOTATION_BUTTON, 1000):
+            logger.warning("First attempt to click quotation button failed. Retrying...")
+            time.sleep(2)
+            if not wait_and_click(driver, LOC_QUOTATION_BUTTON, 10):
+                raise Exception("Quotation button not found after two attempts.")
         time.sleep(1) # Small delay for navigation
         if not wait_and_click(driver, LOC_COMPUTE_MOTOR_BUTTON): raise Exception("Compute Motor button not found.")
         time.sleep(1) # Small delay for form load
@@ -168,20 +207,23 @@ def handle_prima_quotation_form(driver, row):
             logger.warning(f"[{plate}] Error on birthday input. Skipping.") # Don't raise, try to continue
         
         scroll_to_element(driver, LOC_PROCEED_BUTTON)
-        if not wait_and_click(driver, LOC_PROCEED_BUTTON): raise Exception("Proceed button (page 1) not found.")
+        if not wait_and_click(driver, LOC_PROCEED_BUTTON, 10):
+            logger.warning("First attempt to click proceed button failed. Retrying...")
+            time.sleep(2)
+            if not wait_and_click(driver, LOC_PROCEED_BUTTON, 10):
+                raise Exception("Proceed button (page 1) not found.")
         time.sleep(1) # Allow page to transition
 
         # Step 3: Fill additional owner data (Page 2)
-        # Effective Date (optional, only if asked)
-        expiration_str = row['Scadenza'].strftime("%d/%m/%Y")
+        # Cookies Button (optional, only if asked)
         try:
             effective_date_field = WebDriverWait(driver, 3).until( # Shorter wait for optional field
-                EC.element_to_be_clickable(LOC_EFFECTIVE_DATE_INPUT)
+                EC.element_to_be_clickable(LOC_COOKIES_BUTTON)
             )
-            effective_date_field.send_keys(expiration_str)
-            logger.info(f"[{plate}] Filled effective date.")
+            effective_date_field.click()
+            logger.info(f"[{plate}] Cookies button clicked")
         except:
-            logger.info(f"[{plate}] Effective date field not present (all info available).")
+            logger.info(f"[{plate}] Cookies button not present (all info available).")
 
         # License Year
         scroll_to_element(driver, LOC_LICENSE_YEAR_DROPDOWN)
@@ -271,59 +313,220 @@ def handle_prima_quotation_form(driver, row):
         logger.info(f"[{plate}] Waiting for quotation results...")
         time.sleep(7) # Longer sleep here as it's a computation
 
-        # Step 4: Extract Quotation Price
+        # Extract Quotation Price
         quotation_price_element = WebDriverWait(driver, 15).until( # Increased wait for price
             EC.presence_of_element_located(LOC_QUOTATION_PRICE)
         )
-        output = quotation_price_element.text.strip()
-        logger.info(f"[{plate}] Found quotation price: '{output}'")
-        return output
+        quotation_price = quotation_price_element.text.strip()
+
+        # Extract Infortuni Price
+        scroll_to_element(driver, LOC_INFORTUNI_PRICE)
+        infortuni_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_INFORTUNI_PRICE)
+        )
+        infortuni_value = infortuni_element.text.strip()
+
+        # Extract Furto Price
+        scroll_to_element(driver, LOC_FURTO_DROPDOWN)
+        if not wait_and_click(driver, LOC_FURTO_DROPDOWN): raise Exception("Furto dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_FURTO_SELECT_OPTION): raise Exception("Furto option Super not found.")
+        time.sleep(0.5)
+        furto_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_FURTO_PRICE)
+        )
+        furto_value = furto_element.text.strip()
+
+        # Extract Assistenza Price
+        scroll_to_element(driver, LOC_ASSISTENZA_DROPDOWN)
+        if not wait_and_click(driver, LOC_ASSISTENZA_DROPDOWN): raise Exception("Assistenza dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_ASSISTENZA_SELECT_OPTION): raise Exception("Assistenza option Super not found.")
+        time.sleep(0.5)
+        assistenza_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_ASSISTENZA_PRICE)
+        )
+        assistenza_value = assistenza_element.text.strip()
+
+        # Extract Tutela Price
+        scroll_to_element(driver, LOC_TUTELA_DROPDOWN)
+        if not wait_and_click(driver, LOC_TUTELA_DROPDOWN): raise Exception("Tutela dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_TUTELA_SELECT_OPTION): raise Exception("Tutela option Super not found.")
+        time.sleep(0.5)
+        tutela_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_TUTELA_PRICE)
+        )
+        tutela_value = tutela_element.text.strip()
+
+        # Extract Cristalli Price
+        scroll_to_element(driver, LOC_CRISTALLI_DROPDOWN)
+        if not wait_and_click(driver, LOC_CRISTALLI_DROPDOWN): raise Exception("Cristalli dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_CRISTALLI_SELECT_OPTION): raise Exception("Cristalli option Super not found.")
+        time.sleep(0.5)
+        cristalli_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_CRISTALLI_PRICE)
+        )
+        cristalli_value = cristalli_element.text.strip()
+
+        # Extract Eventi Price
+        scroll_to_element(driver, LOC_EVENTI_DROPDOWN)
+        if not wait_and_click(driver, LOC_EVENTI_DROPDOWN): raise Exception("Eventi dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_EVENTI_SELECT_OPTION): raise Exception("Eventi option Super not found.")
+        time.sleep(0.5)
+        eventi_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_EVENTI_PRICE)
+        )
+        eventi_value = eventi_element.text.strip()
+
+        # Extract Atti Price
+        scroll_to_element(driver, LOC_ATTI_DROPDOWN)
+        if not wait_and_click(driver, LOC_ATTI_DROPDOWN): raise Exception("Atti dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_ATTI_SELECT_OPTION): raise Exception("Atti option Super not found.")
+        time.sleep(0.5)
+        atti_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_ATTI_PRICE)
+        )
+        atti_value = atti_element.text.strip()
+
+        # Extract Kasco Collisioni Price
+        scroll_to_element(driver, LOC_KASKOCOL_DROPDOWN)
+        if not wait_and_click(driver, LOC_KASKOCOL_DROPDOWN): raise Exception("Kasco Collisioni dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_KASKOCOL_SELECT_OPTION): raise Exception("Kasco Collisioni option Super not found.")
+        time.sleep(0.5)
+        kasko_col_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_KASKOCOL_PRICE)
+        )
+        kasko_col_value = kasko_col_element.text.strip()
+
+        # Extract Kasco Completo Price
+        scroll_to_element(driver, LOC_KASKOCOMPL_DROPDOWN)
+        if not wait_and_click(driver, LOC_KASKOCOMPL_DROPDOWN): raise Exception("Kasco Completo dropdown not found.")
+        time.sleep(0.5)
+        if not wait_and_click(driver, LOC_KASKOCOMPL_SELECT_OPTION): raise Exception("Kasco Completo option Super not found.")
+        time.sleep(0.5)
+        kasko_compl_element = WebDriverWait(driver, 15).until( # Increased wait for price
+            EC.presence_of_element_located(LOC_KASKOCOMPL_PRICE)
+        )
+        kasko_compl_value = kasko_compl_element.text.strip()
+
+        logger.info(f"[{plate}] Found quotation price: '{quotation_price}'")
+        logger.info(f"[{plate}] Found quotation price: '{infortuni_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{furto_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{assistenza_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{tutela_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{cristalli_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{eventi_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{atti_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{kasko_col_value}'")
+        logger.info(f"[{plate}] Found quotation price: '{kasko_compl_value}'")
+
+        return {
+            "Sito": "Prima.it",                # constant or scraped
+            "RC": quotation_price,             # already working
+            "Infortuni": infortuni_value,      # scrape later
+            "Furto_Incendio": furto_value,     # scrape later
+            "Assistenza_stradale": assistenza_value,
+            "Tutela legale": tutela_value,
+            "Cristalli": cristalli_value,
+            "Eventi_natuali": eventi_value,
+            "Atti_vandalici": atti_value,
+            "Kasko_collisione": kasko_col_value,
+            "Kasko_completa": kasko_compl_value,
+            "Error": "False"
+        }
 
     except Exception as e:
         logger.error(f"[{plate}] [WARNING] Error during quotation retrieval: {e}")
         # Optionally, save a screenshot for debugging
         # driver.save_screenshot(f"error_{plate}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png")
-        return "Error"
+        return {
+            "Sito": "Prima.it",                # constant or scraped
+            "RC": quotation_price,             # already working
+            "Infortuni": infortuni_value,      # scrape later
+            "Furto_Incendio": furto_value,     # scrape later
+            "Assistenza_stradale": assistenza_value,
+            "Tutela legale": tutela_value,
+            "Cristalli": cristalli_value,
+            "Eventi_natuali": eventi_value,
+            "Atti_vandalici": atti_value,
+            "Kasko_collisione": kasko_col_value,
+            "Kasko_completa": kasko_compl_value,
+            "Error": "True"
+        }
+
+def upsert_excel_data(dataframe_to_save, excel_filepath):
+    try:
+        # Load the existing data, or create an empty DataFrame if the file doesn't exist
+        if os.path.exists(excel_filepath):
+            existing_df = pd.read_excel(excel_filepath, dtype={'Targa': str})
+        else:
+            existing_df = pd.DataFrame()
+        # Read the input data excel
+        existing_df = pd.read_excel(excel_filepath)
+        
+        # Concatenate the existing data with the new data.
+        # Set the key column ('Targa') as the index for the merge.
+        combined_df = pd.concat([
+            existing_df.set_index('Targa'), 
+            dataframe_to_save.set_index('Targa')
+        ])
+        # Drop duplicates based on the index, keeping the *last* (newest) row.
+        # This effectively updates existing rows.
+        combined_df = combined_df[~combined_df.index.duplicated(keep='last')]
+        
+        # Reset the index to turn the 'Auto' column back into a regular column
+        combined_df.reset_index(inplace=True)
+
+        # Save the combined DataFrame back to the Excel file
+        combined_df.to_excel(excel_filepath, index=False)
+        logging.info(f"[OK] Excel file {excel_filepath} successfully updated.")        
+
+    except FileNotFoundError:
+        logger.warning(f"[ATTENZIONE] Excel file '{excel_filepath}' not found. Creating a new one.")
+        # If the file doesn't exist, just save the new DataFrame directly.
+        dataframe_to_save.to_excel(excel_filepath, index=False)
+        logger.info(f"[OK] New Excel file created with the data.")
+    except Exception as e:
+        logger.error(f"[KO] An error occurred saving data into {excel_filepath}: {e}")
 
 # --- Main Automation Logic ---
-def main():
-    # Read excel with customers data
-    try:
-        df = pd.read_excel(EXCEL_INPUT_FILE)
-        logger.info(f"Loaded {len(df)} records from {EXCEL_INPUT_FILE}")
-    except FileNotFoundError:
-        logger.error(f"[KO] Input file not found: {EXCEL_INPUT_FILE}. Please ensure it exists.")
-        return
+def run_quotation_process(df=None):
 
-    # Prepare DataFrame columns if they don't exist
-    if 'Modello' not in df.columns:
-        df['Modello'] = None # or pd.NA
+    if df is None:
+        df = pd.read_excel(EXCEL_INPUT_FILE)
+
+    # 1. Add "Processato" column and save all raw data to a new input file
+    if 'Processato' not in df.columns:
+        df['Processato'] = 'NO'
+
+    df['Data_inserimento'] = datetime.now().date()
+
     if 'Preventivo' not in df.columns:
         df['Preventivo'] = None # or pd.NA
 
-    # Select range based on date
-    start_date = datetime.strptime(START_DATE_STR, "%Y-%m-%d")
-    end_date = datetime.strptime(END_DATE_STR, "%Y-%m-%d")
+    customers_to_process_df = df[
+        (df['Processato'] == 'NO')
+    ]
 
     # Ensure 'Scadenza' and 'Data di nascita' columns are datetime
-    df['Scadenza'] = pd.to_datetime(df['Scadenza'], format="%d/%m/%Y", errors='coerce')
-    df['Data di nascita'] = pd.to_datetime(df['Data di nascita'], format="%d/%m/%Y", errors='coerce')
-
-
-    # Filter data: within date range AND 'Preventivo' is null or empty string
-    customers_to_process_df = df[
-        (df['Scadenza'] >= start_date) &
-        (df['Scadenza'] <= end_date) &
-        (df['Preventivo'].isnull() | (df['Preventivo'] == ''))
-    ].copy() # Use .copy() to avoid SettingWithCopyWarning
+    customers_to_process_df['Scadenza'] = pd.to_datetime(customers_to_process_df['Scadenza'], format="%d/%m/%Y", errors='coerce')
+    customers_to_process_df['Data di nascita'] = pd.to_datetime(customers_to_process_df['Data di nascita'], format="%d/%m/%Y", errors='coerce')
 
     if customers_to_process_df.empty:
-        logger.info(f"No records found between {start_date.date()} and {end_date.date()} with missing quotation. Exiting.")
-        return
+        return "I dati non sono stati inseriti correttamente nell'Excel. Riprovare."
 
-    logger.info(f"[OK] Found {len(customers_to_process_df)} records between {start_date.date()} and {end_date.date()} with missing quotation to process.")
     logger.info("First 5 records to process:")
     logger.info(customers_to_process_df.head())
+
+    logger.info("\nInitializing Output dataframe...")
+    results_df = pd.DataFrame(columns=["Targa", "Sito", "RC", "Infortuni", "Furto_Incendio", "Assistenza_stradale",
+                                       "Tutela legale", "Cristalli", "Eventi_natuali", "Atti_vandalici",
+                                        "Kasko_collisione", "Kasko_completa"])
 
     # --- Initialize Undetected ChromeDriver ONCE before the loop ---
     logger.info("\nInitializing Undetected ChromeDriver...")
@@ -337,71 +540,86 @@ def main():
 
     driver = None
     try:
-        driver = uc.Chrome(options=chrome_options)
+        driver = uc.Chrome(version_main=139, options=chrome_options)
         logger.info("[OK] Undetected ChromeDriver initialized successfully.")
     except Exception as e:
         logger.critical(f"[KO] Failed to initialize Undetected ChromeDriver: {e}")
         logger.critical("Please ensure Chrome browser is installed and compatible with undetected_chromedriver.")
         return # Exit if driver setup fails
 
-
+    results = []
     # Attempt to log in once at the beginning
     if not attempt_login(driver):
         logger.critical("[KO] Initial login failed. Exiting script.")
-        #driver.quit()
-        return
+        driver.quit()
+        return "Errore: Fallimento nell'inizializzazione del browser o nel login."
 
     # --- Loop through filtered customers to enrich data ---
     processed_count = 0
+
     for original_idx, row in customers_to_process_df.iterrows():
-        plate = row['Auto']
+        plate = row['Targa']
         
         logger.info(f"\n--- Processing plate: {plate} (Original index: {original_idx}) ---")
-        '''
-        if not driver.service.is_connectable():
-            logger.error(f"[KO] Browser session closed unexpectedly during processing. Quitting.")
-            break
-        '''       
+      
         #Redirect to initial page after the first quotation
         if processed_count > 0:
             driver.get(PRIMA_LOGIN_URL)
             time.sleep(2) # Give the page some time to load after navigating        
-
-        quotation_price = handle_prima_quotation_form(driver, row)
-
-        # Update the ORIGINAL DataFrame 'df' using the original index
-        df.at[original_idx, 'Preventivo'] = quotation_price
+        scraped_data = handle_prima_quotation_form(driver, row)
+        # Build full record including Targa
+        if scraped_data["Error"] != "True":
+            record = {"Targa": row["Targa"], **scraped_data}
+            results_df = pd.concat(
+                [results_df, pd.DataFrame([record])],
+                ignore_index=True
+            )
         
-        if quotation_price == "Error":
-            logger.warning(f"[{plate}] Quotation price set to 'Error' due to scraping issue.")
-        elif quotation_price == "Not found":
-            logger.info(f"[{plate}] Quotation price set to 'Not found' from webpage.")
-        else:
-            logger.info(f"[OK] [{plate}] Quotation price successfully obtained: '{quotation_price}'.")
+        if scraped_data["Error"] == "True":
+            logger.warning(f"[KO] [{plate}] Error due to scraping issue.")
+            results.append(f"[KO] [{plate}] Error due to scraping issue.")
             processed_count += 1
-
+        elif scraped_data == "Not found":
+            logger.info(f"[{plate}] Quotation price set to 'Not found' from webpage.")
+            results.append(f"[{plate}] Quotation price set to 'Not found' from webpage.")
+            processed_count += 1
+        else:
+            logger.info(f"[OK] [{plate}] Quotation price successfully obtained: '{scraped_data["RC"]}'.")
+            results.append(f"[OK] [{plate}] Quotation price successfully obtained: '{scraped_data["RC"]}'.")
+            customers_to_process_df.at[original_idx, 'Processato'] = 'SI'
+            processed_count += 1
         time.sleep(random.uniform(3, 6)) # Longer random delay between each customer to appear more human
-
     # --- Final Save ---
+    
+    # Save input data
+    upsert_excel_data(customers_to_process_df,EXCEL_INPUT_FILE)
+
+    # Save output data
     try:
         # Check if the output file exists and is writable
         if os.path.exists(EXCEL_OUTPUT_FILE) and not os.access(EXCEL_OUTPUT_FILE, os.W_OK):
             logger.error(f"[KO] Output file '{EXCEL_OUTPUT_FILE}' is open or write-protected. Please close it.")
+            results.append(f"[KO] Output file '{EXCEL_OUTPUT_FILE}' is open or write-protected. Please close it.")
         else:
-            df.to_excel(EXCEL_OUTPUT_FILE, index=False)
-            logger.info(f"\n[OK] Automation finished. All data processed and updated Excel saved to: {EXCEL_OUTPUT_FILE}")
-            logger.info(f"Total quotations successfully retrieved: {processed_count}")
+            results_df.pop("Error")
+            results_df["Data_inserimento"] = datetime.now()
+            if not results_df.empty:
+                upsert_excel_data(results_df,EXCEL_OUTPUT_FILE)
+                logger.info(f"\n[OK] Automation finished. All data processed and updated Excel saved to: {EXCEL_OUTPUT_FILE}")
+                results.append(f"\n[OK] Automation finished. All data processed and updated Excel saved to: {EXCEL_OUTPUT_FILE}")
+            else:
+                logger.info(f"\nNessun preventivo calcolato.")
     except Exception as e:
         logger.error(f"\n[KO] Error saving final Excel file: {e}")
+        results.append(f"\n[KO] Error saving final Excel file: {e}")
 
     finally:
         # Ensure the driver is quit at the very end
         if driver:
             try:
-                #driver.quit()
+                driver.quit()
                 logger.info("[OK] Browser closed.")
             except Exception as e:
                 logger.error(f"[WARNING] Error closing browser: {e}. This might be an ignored OSError.")
-
-if __name__ == "__main__":
-    main()
+    
+    return "\n".join(results)
