@@ -189,7 +189,7 @@ def handle_prima_quotation_form(driver, row):
 
     try:
         # Step 1: Navigate to new quotation form (assuming already logged in)
-        if not wait_and_click(driver, LOC_QUOTATION_BUTTON, 1000):
+        if not wait_and_click(driver, LOC_QUOTATION_BUTTON, 10):
             logger.warning("First attempt to click quotation button failed. Retrying...")
             time.sleep(2)
             if not wait_and_click(driver, LOC_QUOTATION_BUTTON, 10):
@@ -320,99 +320,126 @@ def handle_prima_quotation_form(driver, row):
         quotation_price = quotation_price_element.text.strip()
 
         # Extract Infortuni Price
-        scroll_to_element(driver, LOC_INFORTUNI_PRICE)
-        infortuni_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_INFORTUNI_PRICE)
-        )
-        infortuni_value = infortuni_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_INFORTUNI_PRICE)
+            infortuni_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_INFORTUNI_PRICE)
+            )
+            infortuni_value = infortuni_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Infortuni non è presente.")
 
         # Extract Furto Price
-        scroll_to_element(driver, LOC_FURTO_DROPDOWN)
-        if not wait_and_click(driver, LOC_FURTO_DROPDOWN): raise Exception("Furto dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_FURTO_SELECT_OPTION): raise Exception("Furto option Super not found.")
-        time.sleep(0.5)
-        furto_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_FURTO_PRICE)
-        )
-        furto_value = furto_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_FURTO_DROPDOWN)
+            if not wait_and_click(driver, LOC_FURTO_DROPDOWN): raise Exception("Furto dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_FURTO_SELECT_OPTION): raise Exception("Furto option Super not found.")
+            time.sleep(0.5)
+            furto_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_FURTO_PRICE)
+            )
+            furto_value = furto_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Furto non è presente.")
 
         # Extract Assistenza Price
-        scroll_to_element(driver, LOC_ASSISTENZA_DROPDOWN)
-        if not wait_and_click(driver, LOC_ASSISTENZA_DROPDOWN): raise Exception("Assistenza dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_ASSISTENZA_SELECT_OPTION): raise Exception("Assistenza option Super not found.")
-        time.sleep(0.5)
-        assistenza_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_ASSISTENZA_PRICE)
-        )
-        assistenza_value = assistenza_element.text.strip()
+        try:        
+            scroll_to_element(driver, LOC_ASSISTENZA_DROPDOWN)
+            if not wait_and_click(driver, LOC_ASSISTENZA_DROPDOWN): raise Exception("Assistenza dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_ASSISTENZA_SELECT_OPTION): raise Exception("Assistenza option Super not found.")
+            time.sleep(0.5)
+            assistenza_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_ASSISTENZA_PRICE)
+            )
+            assistenza_value = assistenza_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Assistenza non è presente.")
 
         # Extract Tutela Price
-        scroll_to_element(driver, LOC_TUTELA_DROPDOWN)
-        if not wait_and_click(driver, LOC_TUTELA_DROPDOWN): raise Exception("Tutela dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_TUTELA_SELECT_OPTION): raise Exception("Tutela option Super not found.")
-        time.sleep(0.5)
-        tutela_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_TUTELA_PRICE)
-        )
-        tutela_value = tutela_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_TUTELA_DROPDOWN)
+            if not wait_and_click(driver, LOC_TUTELA_DROPDOWN): raise Exception("Tutela dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_TUTELA_SELECT_OPTION): raise Exception("Tutela option Super not found.")
+            time.sleep(0.5)
+            tutela_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_TUTELA_PRICE)
+            )
+            tutela_value = tutela_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Tutela non è presente.")
 
         # Extract Cristalli Price
-        scroll_to_element(driver, LOC_CRISTALLI_DROPDOWN)
-        if not wait_and_click(driver, LOC_CRISTALLI_DROPDOWN): raise Exception("Cristalli dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_CRISTALLI_SELECT_OPTION): raise Exception("Cristalli option Super not found.")
-        time.sleep(0.5)
-        cristalli_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_CRISTALLI_PRICE)
-        )
-        cristalli_value = cristalli_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_CRISTALLI_DROPDOWN)
+            if not wait_and_click(driver, LOC_CRISTALLI_DROPDOWN): raise Exception("Cristalli dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_CRISTALLI_SELECT_OPTION): raise Exception("Cristalli option Super not found.")
+            time.sleep(0.5)
+            cristalli_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_CRISTALLI_PRICE)
+            )
+            cristalli_value = cristalli_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Cristalli non è presente.")
 
         # Extract Eventi Price
-        scroll_to_element(driver, LOC_EVENTI_DROPDOWN)
-        if not wait_and_click(driver, LOC_EVENTI_DROPDOWN): raise Exception("Eventi dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_EVENTI_SELECT_OPTION): raise Exception("Eventi option Super not found.")
-        time.sleep(0.5)
-        eventi_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_EVENTI_PRICE)
-        )
-        eventi_value = eventi_element.text.strip()
-
+        try:
+            scroll_to_element(driver, LOC_EVENTI_DROPDOWN)
+            if not wait_and_click(driver, LOC_EVENTI_DROPDOWN): raise Exception("Eventi dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_EVENTI_SELECT_OPTION): raise Exception("Eventi option Super not found.")
+            time.sleep(0.5)
+            eventi_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_EVENTI_PRICE)
+            )
+            eventi_value = eventi_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Eventi non è presente.")
+        
         # Extract Atti Price
-        scroll_to_element(driver, LOC_ATTI_DROPDOWN)
-        if not wait_and_click(driver, LOC_ATTI_DROPDOWN): raise Exception("Atti dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_ATTI_SELECT_OPTION): raise Exception("Atti option Super not found.")
-        time.sleep(0.5)
-        atti_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_ATTI_PRICE)
-        )
-        atti_value = atti_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_ATTI_DROPDOWN)
+            if not wait_and_click(driver, LOC_ATTI_DROPDOWN): raise Exception("Atti dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_ATTI_SELECT_OPTION): raise Exception("Atti option Super not found.")
+            time.sleep(0.5)
+            atti_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_ATTI_PRICE)
+            )
+            atti_value = atti_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Atti non è presente.")        
 
         # Extract Kasco Collisioni Price
-        scroll_to_element(driver, LOC_KASKOCOL_DROPDOWN)
-        if not wait_and_click(driver, LOC_KASKOCOL_DROPDOWN): raise Exception("Kasco Collisioni dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_KASKOCOL_SELECT_OPTION): raise Exception("Kasco Collisioni option Super not found.")
-        time.sleep(0.5)
-        kasko_col_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_KASKOCOL_PRICE)
-        )
-        kasko_col_value = kasko_col_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_KASKOCOL_DROPDOWN)
+            if not wait_and_click(driver, LOC_KASKOCOL_DROPDOWN): raise Exception("Kasco Collisioni dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_KASKOCOL_SELECT_OPTION): raise Exception("Kasco Collisioni option Super not found.")
+            time.sleep(0.5)
+            kasko_col_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_KASKOCOL_PRICE)
+            )
+            kasko_col_value = kasko_col_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Kasco Collisioni non è presente.")                
 
         # Extract Kasco Completo Price
-        scroll_to_element(driver, LOC_KASKOCOMPL_DROPDOWN)
-        if not wait_and_click(driver, LOC_KASKOCOMPL_DROPDOWN): raise Exception("Kasco Completo dropdown not found.")
-        time.sleep(0.5)
-        if not wait_and_click(driver, LOC_KASKOCOMPL_SELECT_OPTION): raise Exception("Kasco Completo option Super not found.")
-        time.sleep(0.5)
-        kasko_compl_element = WebDriverWait(driver, 15).until( # Increased wait for price
-            EC.presence_of_element_located(LOC_KASKOCOMPL_PRICE)
-        )
-        kasko_compl_value = kasko_compl_element.text.strip()
+        try:
+            scroll_to_element(driver, LOC_KASKOCOMPL_DROPDOWN)
+            if not wait_and_click(driver, LOC_KASKOCOMPL_DROPDOWN): raise Exception("Kasco Completo dropdown not found.")
+            time.sleep(0.5)
+            if not wait_and_click(driver, LOC_KASKOCOMPL_SELECT_OPTION): raise Exception("Kasco Completo option Super not found.")
+            time.sleep(0.5)
+            kasko_compl_element = WebDriverWait(driver, 15).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_KASKOCOMPL_PRICE)
+            )
+            kasko_compl_value = kasko_compl_element.text.strip()
+        except:
+            logger.warning(f"[{plate}] Kasco Completo non è presente.") 
 
         logger.info(f"[{plate}] Found quotation price: '{quotation_price}'")
         logger.info(f"[{plate}] Found quotation price: '{infortuni_value}'")
