@@ -1,81 +1,137 @@
-2025-09-08 23:20:15,918 - INFO - First 5 records to process:
-2025-09-08 23:20:15,920 - INFO -             Nome   Cognome Data di nascita                CF    Targa   Scadenza  ...      Cap       Indirizzo Civico  Processato Data_inserimento  Preventivo
-0  Stelian Ionel    Crutan      1968-02-27  CRTSLN68B27Z129F  GB587ZT 2025-07-13  ...      NaN             NaN    NaN          NO       2025-09-08        None
-1         Davide  Ponzetti      1998-06-23  MRNSMN98H23F829Z  GG227PW 2025-07-14  ...  10151.0  Via Refrancore   30.0          NO       2025-09-08        None
-2         Fiamma    Sagese             NaT  POTBMZ94D10J192C  5AD4025 2025-05-30  ...      NaN             NaN    NaN          NO       2025-09-08        None
+2025-09-09 07:46:04,519 - INFO - First 5 records to process:
+2025-09-09 07:46:04,522 - INFO -             Nome   Cognome Data di nascita                CF    Targa   Scadenza  ...      Cap       Indirizzo Civico  Processato Data_inserimento  Preventivo
+0  Stelian Ionel    Crutan      1968-02-27  CRTSLN68B27Z129F  GB587ZT 2025-07-13  ...      NaN             NaN    NaN          NO       2025-09-09        None
+1         Davide  Ponzetti      1998-06-23  MRNSMN98H23F829Z  GG227PW 2025-07-14  ...  10151.0  Via Refrancore   30.0          NO       2025-09-09        None
+2         Fiamma    Sagese             NaT  POTBMZ94D10J192C  5AD4025 2025-05-30  ...      NaN             NaN    NaN          NO       2025-09-09        None
 
 [3 rows x 15 columns]
-2025-09-08 23:20:15,959 - INFO - 
+2025-09-09 07:46:04,554 - INFO - 
 Initializing Output dataframe...
-2025-09-08 23:20:15,960 - INFO - 
+2025-09-09 07:46:04,556 - INFO - 
 Initializing Undetected ChromeDriver...
-2025-09-08 23:20:16,571 - INFO - patching driver executable C:\Users\Adrian\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
-2025-09-08 23:20:19,770 - INFO - [OK] Undetected ChromeDriver initialized successfully.
-2025-09-08 23:20:19,770 - INFO - Attempting to log in to Prima.it...
-2025-09-08 23:20:23,785 - INFO - [OK] Successfully logged in.
-2025-09-08 23:20:23,787 - INFO - 
+2025-09-09 07:46:31,299 - INFO - patching driver executable C:\Users\Adrian\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-09-09 07:46:34,352 - INFO - [OK] Undetected ChromeDriver initialized successfully.
+2025-09-09 07:46:34,352 - INFO - Attempting to log in to Prima.it...
+2025-09-09 07:46:43,372 - INFO - [OK] Successfully logged in.
+2025-09-09 07:46:43,373 - INFO - 
 --- Processing plate: GB587ZT (Original index: 0) ---
-2025-09-08 23:20:23,788 - INFO - [GB587ZT] Starting quotation process.
-2025-09-08 23:20:28,532 - INFO - [GB587ZT] Cookies button clicked
-2025-09-08 23:20:31,049 - INFO - [GB587ZT] CAP not provided. Using default '10121'.
-2025-09-08 23:20:37,085 - INFO - [GB587ZT] Waiting for quotation results...
-2025-09-08 23:20:54,145 - INFO - [GB587ZT] Found quotation price: '944,40'
-2025-09-08 23:20:54,145 - INFO - [GB587ZT] Found quotation price: '70,00'
-2025-09-08 23:20:54,145 - INFO - [GB587ZT] Found quotation price: '92,85'
-2025-09-08 23:20:54,145 - INFO - [GB587ZT] Found quotation price: '62,00'
-2025-09-08 23:20:54,145 - INFO - [GB587ZT] Found quotation price: '25,00'
-2025-09-08 23:20:54,146 - INFO - [GB587ZT] Found quotation price: '160,34'
-2025-09-08 23:20:54,146 - INFO - [GB587ZT] Found quotation price: '211,33'
-2025-09-08 23:20:54,146 - INFO - [GB587ZT] Found quotation price: '266,34'
-2025-09-08 23:20:54,146 - INFO - [GB587ZT] Found quotation price: '141,19'
-2025-09-08 23:20:54,146 - INFO - [GB587ZT] Found quotation price: '792,34'
-2025-09-08 23:20:54,148 - INFO - [OK] [GB587ZT] Quotation price successfully obtained: '944,40'.
-2025-09-08 23:20:59,586 - INFO - 
---- Processing plate: GG227PW (Original index: 1) ---
-2025-09-08 23:21:02,075 - INFO - [GG227PW] Starting quotation process.
-2025-09-08 23:21:08,807 - INFO - [GG227PW] Cookies button not present (all info available).
-2025-09-08 23:21:09,442 - INFO - [GG227PW] License year not provided. Selecting first available.
-2025-09-08 23:21:17,228 - INFO - [GG227PW] Waiting for quotation results...
-2025-09-08 23:21:34,368 - INFO - [GG227PW] Found quotation price: '426,97'
-2025-09-08 23:21:34,369 - INFO - [GG227PW] Found quotation price: '70,00'
-2025-09-08 23:21:34,369 - INFO - [GG227PW] Found quotation price: '33,64'
-2025-09-08 23:21:34,370 - INFO - [GG227PW] Found quotation price: '62,00'
-2025-09-08 23:21:34,370 - INFO - [GG227PW] Found quotation price: '25,00'
-2025-09-08 23:21:34,370 - INFO - [GG227PW] Found quotation price: '54,14'
-2025-09-08 23:21:34,371 - INFO - [GG227PW] Found quotation price: '192,16'
-2025-09-08 23:21:34,371 - INFO - [GG227PW] Found quotation price: '1.044,05'
-2025-09-08 23:21:34,371 - INFO - [GG227PW] Found quotation price: '284,81'
-2025-09-08 23:21:34,371 - INFO - [GG227PW] Found quotation price: '1.409,87'
-2025-09-08 23:21:34,373 - INFO - [OK] [GG227PW] Quotation price successfully obtained: '426,97'.
-2025-09-08 23:21:39,754 - INFO - 
---- Processing plate: 5AD4025 (Original index: 2) ---
-2025-09-08 23:21:42,239 - INFO - [5AD4025] Starting quotation process.
-2025-09-08 23:21:44,648 - ERROR - [5AD4025] [WARNING] Error during quotation retrieval: NaTType does not support strftime
-2025-09-08 23:21:44,648 - WARNING - [KO] [5AD4025] Error due to scraping issue.
-2025-09-08 23:21:50,586 - INFO - [OK] Excel file data_input.xlsx successfully updated.
-2025-09-08 23:21:50,659 - INFO - [OK] Excel file quotations.xlsx successfully updated.
-2025-09-08 23:21:50,660 - INFO - 
-[OK] Automation finished. All data processed and updated Excel saved to: quotations.xlsx
-2025-09-08 23:21:51,443 - INFO - [OK] Browser closed.
-2025-09-08 23:21:55,994 - INFO - First 5 records to process:
-2025-09-08 23:21:55,995 - INFO -      Targa    Nome Cognome Data di nascita                CF   Scadenza      Modello  ...  Citta di residenza Cap  Indirizzo Civico  Processato Data_inserimento Preventivo
-2  5AD4025  Fiamma  Sagese             NaT  POTBMZ94D10J192C 2025-05-30  Hyundai i20  ...                 NaN NaN        NaN    NaN          NO       2025-09-08        NaN
+2025-09-09 07:46:43,373 - INFO - [GB587ZT] Starting quotation process.
+2025-09-09 07:46:55,554 - WARNING - Could not click ('css selector', '.up-x-to-close.userpilot-experience-btn.ref') within 3s: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0xcfa8a3+63283]
+	GetHandleVerifier [0x0xcfa8e4+63348]
+	(No symbol) [0x0xb33e43]
+	(No symbol) [0x0xb7c8de]
+	(No symbol) [0x0xb7cc7b]
+	(No symbol) [0x0xbc4ef2]
+	(No symbol) [0x0xba1464]
+	(No symbol) [0x0xbc271a]
+	(No symbol) [0x0xba1216]
+	(No symbol) [0x0xb70855]
+	(No symbol) [0x0xb716f4]
+	GetHandleVerifier [0x0xf6bb43+2623955]
+	GetHandleVerifier [0x0xf66daa+2604090]
+	GetHandleVerifier [0x0xd2069a+218410]
+	GetHandleVerifier [0x0xd10ed8+154984]
+	GetHandleVerifier [0x0xd1742d+180925]
+	GetHandleVerifier [0x0xd022b8+94536]
+	GetHandleVerifier [0x0xd02442+94930]
+	GetHandleVerifier [0x0xced5ea+9338]
+	BaseThreadInitThunk [0x0x76835d49+25]
+	RtlInitializeExceptionChain [0x0x77b4d2fb+107]
+	RtlGetAppContainerNamedObjectPath [0x0x77b4d281+561]
 
-[1 rows x 15 columns]
-2025-09-08 23:21:56,024 - INFO - 
-Initializing Output dataframe...
-2025-09-08 23:21:56,025 - INFO - 
-Initializing Undetected ChromeDriver...
-2025-09-08 23:21:56,487 - INFO - patching driver executable C:\Users\Adrian\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
-2025-09-08 23:21:59,989 - INFO - [OK] Undetected ChromeDriver initialized successfully.
-2025-09-08 23:21:59,990 - INFO - Attempting to log in to Prima.it...
-2025-09-08 23:22:03,927 - INFO - [OK] Successfully logged in.
-2025-09-08 23:22:03,928 - INFO - 
+2025-09-09 07:46:55,554 - WARNING - Advertizing not found.
+2025-09-09 07:46:59,156 - INFO - [GB587ZT] Cookies button clicked
+2025-09-09 07:47:04,033 - INFO - [GB587ZT] CAP not provided. Using default '10121'.
+2025-09-09 07:47:09,839 - INFO - [GB587ZT] Waiting for quotation results...
+2025-09-09 07:47:25,839 - INFO - [GB587ZT] Found quotation price: '944,40'
+2025-09-09 07:47:25,839 - INFO - [GB587ZT] Found quotation price: '70,00'
+2025-09-09 07:47:25,839 - INFO - [GB587ZT] Found quotation price: '92,85'
+2025-09-09 07:47:25,840 - INFO - [GB587ZT] Found quotation price: '62,00'
+2025-09-09 07:47:25,840 - INFO - [GB587ZT] Found quotation price: '25,00'
+2025-09-09 07:47:25,840 - INFO - [GB587ZT] Found quotation price: '160,34'
+2025-09-09 07:47:25,841 - INFO - [GB587ZT] Found quotation price: '211,33'
+2025-09-09 07:47:25,842 - INFO - [GB587ZT] Found quotation price: '266,34'
+2025-09-09 07:47:25,842 - INFO - [GB587ZT] Found quotation price: '141,19'
+2025-09-09 07:47:25,842 - INFO - [GB587ZT] Found quotation price: '792,34'
+2025-09-09 07:47:25,844 - INFO - [OK] [GB587ZT] Quotation price successfully obtained: '944,40'.
+2025-09-09 07:47:30,517 - INFO - 
+--- Processing plate: GG227PW (Original index: 1) ---
+2025-09-09 07:47:35,514 - INFO - [GG227PW] Starting quotation process.
+2025-09-09 07:47:38,584 - WARNING - Could not click ('css selector', '.up-x-to-close.userpilot-experience-btn.ref') within 3s: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0xcfa8a3+63283]
+	GetHandleVerifier [0x0xcfa8e4+63348]
+	(No symbol) [0x0xb33e43]
+	(No symbol) [0x0xb7c8de]
+	(No symbol) [0x0xb7cc7b]
+	(No symbol) [0x0xbc4ef2]
+	(No symbol) [0x0xba1464]
+	(No symbol) [0x0xbc271a]
+	(No symbol) [0x0xba1216]
+	(No symbol) [0x0xb70855]
+	(No symbol) [0x0xb716f4]
+	GetHandleVerifier [0x0xf6bb43+2623955]
+	GetHandleVerifier [0x0xf66daa+2604090]
+	GetHandleVerifier [0x0xd2069a+218410]
+	GetHandleVerifier [0x0xd10ed8+154984]
+	GetHandleVerifier [0x0xd1742d+180925]
+	GetHandleVerifier [0x0xd022b8+94536]
+	GetHandleVerifier [0x0xd02442+94930]
+	GetHandleVerifier [0x0xced5ea+9338]
+	BaseThreadInitThunk [0x0x76835d49+25]
+	RtlInitializeExceptionChain [0x0x77b4d2fb+107]
+	RtlGetAppContainerNamedObjectPath [0x0x77b4d281+561]
+
+2025-09-09 07:47:38,584 - WARNING - Advertizing not found.
+2025-09-09 07:47:45,115 - INFO - [GG227PW] Cookies button not present (all info available).
+2025-09-09 07:47:45,712 - INFO - [GG227PW] License year not provided. Selecting first available.
+2025-09-09 07:47:53,268 - INFO - [GG227PW] Waiting for quotation results...
+2025-09-09 07:48:03,649 - INFO - [GG227PW] Found quotation price: '426,97'
+2025-09-09 07:48:03,649 - INFO - [GG227PW] Found quotation price: '70,00'
+2025-09-09 07:48:03,649 - INFO - [GG227PW] Found quotation price: '33,64'
+2025-09-09 07:48:03,650 - INFO - [GG227PW] Found quotation price: '62,00'
+2025-09-09 07:48:03,650 - INFO - [GG227PW] Found quotation price: '25,00'
+2025-09-09 07:48:03,650 - INFO - [GG227PW] Found quotation price: '54,14'
+2025-09-09 07:48:03,650 - INFO - [GG227PW] Found quotation price: '192,16'
+2025-09-09 07:48:03,651 - INFO - [GG227PW] Found quotation price: '1.044,05'
+2025-09-09 07:48:03,651 - INFO - [GG227PW] Found quotation price: '284,81'
+2025-09-09 07:48:03,651 - INFO - [GG227PW] Found quotation price: '1.409,87'
+2025-09-09 07:48:03,652 - INFO - [OK] [GG227PW] Quotation price successfully obtained: '426,97'.
+2025-09-09 07:48:09,213 - INFO - 
 --- Processing plate: 5AD4025 (Original index: 2) ---
-2025-09-08 23:22:03,928 - INFO - [5AD4025] Starting quotation process.
-2025-09-08 23:22:07,225 - ERROR - [5AD4025] [WARNING] Error during quotation retrieval: NaTType does not support strftime
-2025-09-08 23:22:07,233 - WARNING - [KO] [5AD4025] Error due to scraping issue.
-2025-09-08 23:22:11,266 - INFO - [OK] Excel file data_input.xlsx successfully updated.
-2025-09-08 23:22:11,267 - ERROR - 
-[KO] Error saving final Excel file: 'Error'
-2025-09-08 23:22:12,003 - INFO - [OK] Browser closed.
+2025-09-09 07:48:14,506 - INFO - [5AD4025] Starting quotation process.
+2025-09-09 07:48:17,610 - WARNING - Could not click ('css selector', '.up-x-to-close.userpilot-experience-btn.ref') within 3s: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0xcfa8a3+63283]
+	GetHandleVerifier [0x0xcfa8e4+63348]
+	(No symbol) [0x0xb33e43]
+	(No symbol) [0x0xb7c8de]
+	(No symbol) [0x0xb7cc7b]
+	(No symbol) [0x0xbc4ef2]
+	(No symbol) [0x0xba1464]
+	(No symbol) [0x0xbc271a]
+	(No symbol) [0x0xba1216]
+	(No symbol) [0x0xb70855]
+	(No symbol) [0x0xb716f4]
+	GetHandleVerifier [0x0xf6bb43+2623955]
+	GetHandleVerifier [0x0xf66daa+2604090]
+	GetHandleVerifier [0x0xd2069a+218410]
+	GetHandleVerifier [0x0xd10ed8+154984]
+	GetHandleVerifier [0x0xd1742d+180925]
+	GetHandleVerifier [0x0xd022b8+94536]
+	GetHandleVerifier [0x0xd02442+94930]
+	GetHandleVerifier [0x0xced5ea+9338]
+	BaseThreadInitThunk [0x0x76835d49+25]
+	RtlInitializeExceptionChain [0x0x77b4d2fb+107]
+	RtlGetAppContainerNamedObjectPath [0x0x77b4d281+561]
+
+2025-09-09 07:48:17,610 - WARNING - Advertizing not found.
+2025-09-09 07:48:19,888 - ERROR - [5AD4025] [WARNING] Error during quotation retrieval: NaTType does not support strftime
+2025-09-09 07:48:19,889 - WARNING - [KO] [5AD4025] Error due to scraping issue.
+2025-09-09 07:48:24,140 - INFO - [OK] Excel file data_input.xlsx successfully updated.
+2025-09-09 07:48:24,188 - INFO - [OK] Excel file quotations.xlsx successfully updated.
+2025-09-09 07:48:24,188 - INFO - 
+[OK] Automation finished. All data processed and updated Excel saved to: quotations.xlsx
+2025-09-09 07:48:24,605 - INFO - [OK] Browser closed.
