@@ -77,12 +77,14 @@ LOC_COMPUTE_QUOTATION_BUTTON = (By.CSS_SELECTOR, ".btn.btn--primary[data-test-id
 # Prima Results
 LOC_QUOTATION_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box__price guarantee-box__price--highlighted'] span[class='price__value']")
 LOC_INFORTUNI_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-infortuni_conducente has-bundle-discount-badge'] span[class='price__value']")
+LOC_INFORTUNI_DISCOUNT = (By.CSS_SELECTOR, "div[data-test-id='infortuni-conducente-bundle-discount-badge'] strong[class='c-brand-dark']")
 LOC_FURTO_DROPDOWN = (By.XPATH, "//div[@class='guarantee-box guarantee-furto_incendio']//div[@class='guarantee-box__optionsWrapper']//div[1]")
 LOC_FURTO_SELECT_OPTION = (By.XPATH, "//div[@class='dropdown__option is-open']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
 LOC_FURTO_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-furto_incendio'] span[class='price__value']")
 LOC_ASSISTENZA_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-assistenza_stradale has-bundle-discount-badge']//div[@class='dropdown__option']")
 LOC_ASSISTENZA_SELECT_OPTION = (By.XPATH,"//div[@class='dropdown__option is-open']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
 LOC_ASSISTENZA_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-assistenza_stradale has-bundle-discount-badge'] span[class='price__value']")
+LOC_ASSISTENZA_DISCOUNT = (By.CSS_SELECTOR, "div[data-test-id='assistenza-stradale-bundle-discount-badge'] strong[class='c-brand-dark']")
 LOC_TUTELA_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-tutela_legale']//div[@class='dropdown__option']")
 LOC_TUTELA_SELECT_OPTION = (By.XPATH,"//li[contains(text(),'Super, fino a € 20.000')]")
 LOC_TUTELA_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-tutela_legale'] span[class='price__value']")
@@ -322,7 +324,8 @@ def handle_prima_quotation_form(driver, row):
         quotation_price_element = WebDriverWait(driver, 15).until( # Increased wait for price
             EC.presence_of_element_located(LOC_QUOTATION_PRICE)
         )
-        quotation_price = quotation_price_element.text.strip()
+        quotation_text = quotation_price_element.text.strip()
+        quotation_price = float(quotation_text.replace('€', '').replace(',', '.').strip())
 
         # Extract Infortuni Price
         try:
@@ -330,7 +333,19 @@ def handle_prima_quotation_form(driver, row):
             infortuni_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_INFORTUNI_PRICE)
             )
-            infortuni_value = infortuni_element.text.strip()
+            infortuni_text = infortuni_element.text.strip() #estrae solo il test
+            infortuni_value = float(infortuni_text.replace('€', '').replace(',', '.').strip())
+            try:
+                infortuni_discount_element = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located(LOC_INFORTUNI_DISCOUNT)
+                )
+                infortuni_discount_text = infortuni_discount_element.text.strip()
+                infortuni_discount_value = float(infortuni_discount_text.replace('€', '').replace(',', '.').strip())
+            except: 
+                logger.warning(f"[{plate}] Nessuno sconto sulla Garanzia")
+                infortuni_discount_value = 0
+
+            infortuni_value -= infortuni_discount_value #Valore finale
         except:
             logger.warning(f"[{plate}] Garanzia infortuni non è presente.")
 
@@ -344,7 +359,8 @@ def handle_prima_quotation_form(driver, row):
             furto_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_FURTO_PRICE)
             )
-            furto_value = furto_element.text.strip()
+            furto_text = furto_element.text.strip()
+            furto_value = float(furto_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Garanzia furto non è presente.")
 
@@ -358,7 +374,18 @@ def handle_prima_quotation_form(driver, row):
             assistenza_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_ASSISTENZA_PRICE)
             )
-            assistenza_value = assistenza_element.text.strip()
+            assistenza_text = assistenza_element.text.strip()
+            assistenza_value = float(assistenza_text.replace('€', '').replace(',', '.').strip())
+            try:
+                assistenza_discount_element = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located(LOC_ASSISTENZA_DISCOUNT)
+                )
+                assistenza_discount_text = assistenza_discount_element.text.strip()
+                assistenza_discount_value = float(assistenza_discount_text.replace('€', '').replace(',', '.').strip())
+            except:
+                logger.warning(f"[{plate}] Nessuno sconto sull'assistenza")
+                assistenza_discount_value = 0
+            assistenza_value -= assistenza_discount_value
         except:
             logger.warning(f"[{plate}] Garanzia assistenza non è presente.")
 
@@ -372,7 +399,8 @@ def handle_prima_quotation_form(driver, row):
             tutela_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_TUTELA_PRICE)
             )
-            tutela_value = tutela_element.text.strip()
+            tutela_text = tutela_element.text.strip()
+            tutela_value = float(tutela_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Garanzia tutela non è presente.")
 
@@ -386,7 +414,8 @@ def handle_prima_quotation_form(driver, row):
             cristalli_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_CRISTALLI_PRICE)
             )
-            cristalli_value = cristalli_element.text.strip()
+            cristalli_text = cristalli_element.text.strip()
+            cristalli_value = float(cristalli_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Garanzia cristalli non è presente.")
 
@@ -400,7 +429,8 @@ def handle_prima_quotation_form(driver, row):
             eventi_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_EVENTI_PRICE)
             )
-            eventi_value = eventi_element.text.strip()
+            eventi_text = eventi_element.text.strip()
+            eventi_value = float(eventi_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Eventi non è presente.")
         
@@ -414,7 +444,8 @@ def handle_prima_quotation_form(driver, row):
             atti_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_ATTI_PRICE)
             )
-            atti_value = atti_element.text.strip()
+            atti_text = atti_element.text.strip()
+            atti_value = float(atti_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Atti non è presente.")        
 
@@ -428,7 +459,8 @@ def handle_prima_quotation_form(driver, row):
             kasko_col_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_KASKOCOL_PRICE)
             )
-            kasko_col_value = kasko_col_element.text.strip()
+            kasko_col_text = kasko_col_element.text.strip()
+            kasko_col_value = float(kasko_col_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Kasco Collisioni non è presente.")                
 
@@ -442,7 +474,8 @@ def handle_prima_quotation_form(driver, row):
             kasko_compl_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_KASKOCOMPL_PRICE)
             )
-            kasko_compl_value = kasko_compl_element.text.strip()
+            kasko_compl_text = kasko_compl_element.text.strip()
+            kasko_compl_value = float(kasko_compl_text.replace('€', '').replace(',', '.').strip())
         except:
             logger.warning(f"[{plate}] Kasco Completo non è presente.") 
 
