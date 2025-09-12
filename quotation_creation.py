@@ -103,7 +103,7 @@ LOC_KASKOCOL_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-colli
 LOC_KASKOCOMPL_DROPDOWN = (By.XPATH,"//div[@class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border']//div[@class='dropdown__option']")
 LOC_KASKOCOMPL_SELECT_OPTION = (By.XPATH,"//div[@class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border']//li[@class='dropdown__option__list__item'][normalize-space()='Super']")
 LOC_KASKOCOMPL_PRICE = (By.CSS_SELECTOR, "div[class='guarantee-box guarantee-kasko with-ribbon-badge with-ribbon-badge__border'] span[class='price__value']")
-
+LOC_WARNING_60DAYS = (By.CSS_SELECTOR, ".message__content") 
 
 # --- Helper Functions for Selenium Interactions ---
 
@@ -186,6 +186,7 @@ def handle_prima_quotation_form(driver, row):
     atti_value = None
     kasko_col_value = None
     kasko_compl_value = None
+    warning = None
 
     plate = row['Targa']
     logger.info(f"[{plate}] Starting quotation process.")
@@ -320,6 +321,17 @@ def handle_prima_quotation_form(driver, row):
         logger.info(f"[{plate}] Waiting for quotation results...")
         time.sleep(7) # Longer sleep here as it's a computation
 
+        # Check rennovation warning
+        warning_60days = None
+        try:
+            warning_60days = WebDriverWait(driver, 10).until( # Increased wait for price
+                EC.presence_of_element_located(LOC_WARNING_60DAYS)
+            )
+            if warning_60days is not None:
+                logger.warning(f"[{plate}] Avviso presente")
+        except:
+            logger.warning(f"[{plate}] Nessun avviso")
+
         # Extract Quotation Price
         quotation_price_element = WebDriverWait(driver, 15).until( # Increased wait for price
             EC.presence_of_element_located(LOC_QUOTATION_PRICE)
@@ -437,9 +449,9 @@ def handle_prima_quotation_form(driver, row):
         # Extract Atti Price
         try:
             scroll_to_element(driver, LOC_ATTI_DROPDOWN)
-            if not wait_and_click(driver, LOC_ATTI_DROPDOWN):
+            if not wait_and_click(driver, LOC_ATTI_DROPDOWN,10):
                 time.sleep(0.2)
-            if not wait_and_click(driver, LOC_ATTI_SELECT_OPTION):
+            if not wait_and_click(driver, LOC_ATTI_SELECT_OPTION,10):
                 time.sleep(0.2)
             atti_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_ATTI_PRICE)
@@ -467,9 +479,9 @@ def handle_prima_quotation_form(driver, row):
         # Extract Kasco Completo Price
         try:
             scroll_to_element(driver, LOC_KASKOCOMPL_DROPDOWN)
-            if not wait_and_click(driver, LOC_KASKOCOMPL_DROPDOWN):
+            if not wait_and_click(driver, LOC_KASKOCOMPL_DROPDOWN,10):
                 time.sleep(0.5)
-            if not wait_and_click(driver, LOC_KASKOCOMPL_SELECT_OPTION):
+            if not wait_and_click(driver, LOC_KASKOCOMPL_SELECT_OPTION,10):
                 time.sleep(0.5)
             kasko_compl_element = WebDriverWait(driver, 15).until( # Increased wait for price
                 EC.presence_of_element_located(LOC_KASKOCOMPL_PRICE)
@@ -480,15 +492,15 @@ def handle_prima_quotation_form(driver, row):
             logger.warning(f"[{plate}] Kasco Completo non è presente.") 
 
         logger.info(f"[{plate}] Found quotation price: '{quotation_price}'")
-        logger.info(f"[{plate}] Found quotation price: '{infortuni_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{furto_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{assistenza_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{tutela_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{cristalli_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{eventi_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{atti_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{kasko_col_value}'")
-        logger.info(f"[{plate}] Found quotation price: '{kasko_compl_value}'")
+        logger.info(f"[{plate}] Found infortuni price: '{infortuni_value}'")
+        logger.info(f"[{plate}] Found furto price: '{furto_value}'")
+        logger.info(f"[{plate}] Found assistenza price: '{assistenza_value}'")
+        logger.info(f"[{plate}] Found tutela price: '{tutela_value}'")
+        logger.info(f"[{plate}] Found cristalli price: '{cristalli_value}'")
+        logger.info(f"[{plate}] Found eventi price: '{eventi_value}'")
+        logger.info(f"[{plate}] Found atti price: '{atti_value}'")
+        logger.info(f"[{plate}] Found kasko collision price: '{kasko_col_value}'")
+        logger.info(f"[{plate}] Found kasko completa price: '{kasko_compl_value}'")
 
         return {
             "Sito": "Prima.it",                # constant or scraped
@@ -502,7 +514,7 @@ def handle_prima_quotation_form(driver, row):
             "Atti_vandalici": atti_value,
             "Kasko_collisione": kasko_col_value,
             "Kasko_completa": kasko_compl_value,
-            "Error": "False"
+            "Error" : warning_60days if warning_60days is not None else "False"
         }
 
     except Exception as e:
@@ -650,6 +662,8 @@ def run_quotation_process(df=None):
             processed_count += 1
         else:
             logger.info(f"[OK] [{plate}] Quotation price successfully obtained: '{scraped_data["RC"]}'.")
+            if scraped_data["Error"] != "False":
+                results.append(f"[OK] [{plate}] Avviso: '{scraped_data["Error"]}'.")
             results.append(f"[OK] [{plate}] Quotation price successfully obtained: '{scraped_data["RC"]}'.")
             customers_to_process_df.at[original_idx, 'Processato'] = 'SI'
             processed_count += 1
