@@ -13,24 +13,56 @@ if 'logged_in' not in st.session_state:
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
 
+if 'targa_selected' not in st.session_state:
+    st.session_state.targa_selected = None
+
 # --- Excel File Configuration ---
 EXCEL_USER_FILE = "users.xlsx"
+EXCEL_QUOTATION_FILE = "quotations.xlsx"
 
 
-def load_users_from_excel():
+def load_excel(excel):
     """
     Loads user credentials and roles from a specified Excel file.
     The file must have columns: 'Utenza', 'Password', 'Ruolo'.
     """
     try:
-        users_df = pd.read_excel(EXCEL_USER_FILE)
+        users_df = pd.read_excel(excel)
         return users_df
     except FileNotFoundError:
-        st.error(f"Errore: Il file '{EXCEL_USER_FILE}' non è stato trovato. Si prega di creare il file con le colonne 'Utenza', 'Password' e 'Ruolo'.")
+        st.error(f"Errore: Il file '{excel}' non è stato trovato.")
         return pd.DataFrame()
     except Exception as e:
         st.error(f"Errore durante la lettura del file Excel: {e}")
         return pd.DataFrame()
+
+def get_options_for_column(df, column_name):
+    """
+    Extracts unique values from a specified column of a DataFrame and
+    adds a 'Nessuna garanzia' option.
+    """
+    options = ["Nessuna garanzia"]
+    if column_name in df.columns:
+        # Use .unique() to get a list of unique values
+        unique_values = df[column_name].unique().tolist()
+        options.extend(unique_values)
+    return options
+
+def get_value_from_string(price_string):
+    """
+    Converts a price string (e.g., '€ 1.250,50') into a float.
+    Returns 0.0 if the string is not a valid price or "Nessuna garanzia".
+    """
+    if price_string == "Nessuna garanzia":
+        return 0.0
+    try:
+        # Remove currency symbols (€), spaces, and replace the comma with a dot
+        cleaned_string = price_string.replace('€', '').replace(',', '.').strip()
+        # Convert the cleaned string to a float
+        return float(cleaned_string)
+    except (ValueError, AttributeError):
+        # Handle cases where the string is not a valid number
+        return 0.0
 
 def authenticate_user(username, password, users_df):
     """
@@ -112,7 +144,7 @@ def login_form_page():
         
         # "Accedi" (Login) button
         if st.button("Accedi", use_container_width=True):
-            users_df = load_users_from_excel()
+            users_df = load_excel(EXCEL_USER_FILE)
             user_role = authenticate_user(username, password, users_df)
             
             if user_role:
@@ -162,7 +194,8 @@ def dashboard_page():
 
         # Button 2: Componi preventivo (Visible to all)
         if st.button("Componi preventivo", use_container_width=True):
-            st.info("Funzionalità 'Componi preventivo' in sviluppo...")
+            st.session_state.page = 'quotation_composition'
+            st.rerun()
 
         # Button 3: Consulta dati (Visible to 'Esperto')
         if st.session_state.user_role in ['Esperto', 'Admin']:
@@ -260,6 +293,93 @@ def quotation_calculation_page():
             st.session_state.page = 'dashboard'
             st.rerun()
 
+def quotation_composition_page():
+    """
+    Displays the page to compose a new quotation.
+    """
+    # Initialize session state for all quotation components
+    quotation_components = [
+        'RC', 'Infortuni', 'Furto_Incendio', 'Assistenza_stradale',
+        'Tutela_legale', 'Cristalli', 'Eventi_naturali', 'Atti_vandalici',
+        'Kasko_collisione', 'Kasko_completa'
+    ]
+    for comp in quotation_components:
+        if comp not in st.session_state:
+            st.session_state[comp] = "Nessuna garanzia"
+
+    if not st.session_state.logged_in:
+        st.warning("Per accedere a questa pagina, devi prima effettuare il login.")
+        st.session_state.page = 'login'
+        st.rerun()
+        return
+
+    # Use columns to position the header and center the content
+    col_empty, col_header, _ = st.columns([0.05, 3, 1])
+    with col_header:
+        st.markdown("# Pass Broker")
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.title("Componi Preventivo")
+        st.write("---")
+
+        if st.session_state.targa_selected is None:
+            st.write("Seleziona la targa del veicolo per continuare:")
+            
+            # Input field for the license plate
+            targa = st.text_input("Targa")
+
+            st.write("")
+            
+            if st.button("Continua", type="primary", use_container_width=True):
+                if targa:
+                    st.session_state.targa_selected = targa.upper()
+                    st.rerun()
+                else:
+                    st.error("Per favore, inserisci una targa.")
+        else:
+            st.write(f"Targa selezionata: **{st.session_state.targa_selected}**")
+            st.write("---")
+            st.write("Seleziona il preventivo da cui vuoi partire:")
+
+            quotations_df = load_excel(EXCEL_QUOTATION_FILE)
+
+            if not quotations_df.empty:
+                # Filter the DataFrame for the selected license plate
+                filtered_quotations = quotations_df[quotations_df['Targa'] == st.session_state.targa_selected]
+
+                if not filtered_quotations.empty:
+                    # Dynamically create selectboxes for each component
+                    for component in quotation_components:
+                        options = get_options_for_column(filtered_quotations, component)
+                        st.session_state[component] = st.selectbox(
+                            f"Scegli un'opzione per {component}:",
+                            options,
+                            key=f"selectbox_{component}"
+                        )
+                    
+                    # Calculate and display the total
+                    total = 0.0
+                    for component in quotation_components:
+                        selected_value = st.session_state[component]
+                        total += get_value_from_string(selected_value)
+
+                    st.write("---")
+                    st.metric("Totale:", f"€ {total:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+
+                else:
+                    st.warning("Nessun preventivo trovato per la targa inserita. Riprova con un'altra targa.")
+            
+            st.write("")
+            if st.button("Torna alla selezione Targa", use_container_width=True):
+                st.session_state.targa_selected = None
+                st.rerun()
+            
+        st.write("")
+        if st.button("Torna alla Dashboard", use_container_width=True):
+            st.session_state.page = 'dashboard'
+            st.rerun()
+            
 def main():
     """
     Main function to manage the app's pages.
@@ -273,6 +393,8 @@ def main():
         dashboard_page()
     elif st.session_state.page == 'quotation_calculation':
         quotation_calculation_page()
+    elif st.session_state.page == 'quotation_composition':
+        quotation_composition_page()
 
 if __name__ == "__main__":
     main()
